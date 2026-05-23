@@ -1,1 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">SIXSEVEN</title>
+    <link id="favicon" rel="icon" href="" type="image/x-icon">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
+
+    <style>
+        :root {
+            --accent: #ffffff;
+            --bg: #ffffff; /* Deep Charcoal Black */
+            --card-bg: #00000021;
+            --border: rgb(255, 255, 255);
+            --transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --danger: #ffffff;
+            --success: #ffffff;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body { 
+            background: radial-gradient(circle at center, #111215 0%, #060608 100%);
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed; 
+            color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+            line-height: 1.6; 
+            transition: background 0.8s ease; 
+        }
+        
+        #weather-canvas { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            pointer-events: none; 
+            z-index: 49; 
+        }
+        
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateY(20px); filter: blur(5px); } 
+            to { opacity: 1; transform: translateY(0); filter: blur(0); } 
+        }
+        
+        .top-nav { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            padding: 20px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 1000; 
+            background: rgba(6, 6, 8, 0.75); 
+            backdrop-filter: blur(20px); 
+            border-bottom: 1px solid var(--border); 
+            transition: var(--transition);
+        }
+
+        .config-btn { 
+            background: #ffffff; 
+            color: #ffffff; 
+            border: none; 
+            padding: 10px 24px; 
+            border-radius: 8px; 
+            font-family: 'Orbitron', sans-serif; 
+            cursor: pointer; 
+            transition: var(--transition); 
+            font-size: 11px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+
+        .config-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 0 20px rgb(255, 255, 255); 
+        }
+        
+        .hero { 
+            padding: 160px 20px 60px; 
+            text-align: center; 
+            animation: slideIn 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; 
+        }
+
+        #siteLogo { 
+            max-width: 150px; 
+            height: auto;
+            margin-bottom: 25px; 
+            filter: drop-shadow(0 0 30px var(--accent)); 
+            transition: var(--transition);
+        }
+
+        .hero h1 { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: clamp(30px, 7vw, 56px); 
+            font-weight: 900;
+            letter-spacing: 12px; 
+            color: var(--accent); 
+            text-transform: uppercase; 
+            margin-bottom: 12px; 
+            text-shadow: 0 0 35px rgb(255, 255, 255);
+        }
+        
+        /* ========================================== */
+        /* 🎨 ปรับดีไซน์หมวดหมู่และการ์ดยศแบบต้นฉบับ */
+        /* ========================================== */
+        .category-section { 
+            max-width: 1440px; 
+            margin: 50px auto; 
+            padding: 0 6%; 
+        }
+
+        .category-header { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 20px; 
+            font-weight: 900;
+            letter-spacing: 2px; 
+            color: #fff; 
+            margin-bottom: 25px; 
+            text-transform: uppercase; 
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+
+        .header-count {
+            font-size: 13px;
+            font-weight: 700;
+            color: #55585f;
+            letter-spacing: 1.5px;
+        }
+        
+        .member-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 20px; 
+            padding-bottom: 20px; 
+            z-index: 100; 
+            position: relative; 
+        }
+
+        .member-card { 
+            background: var(--card-bg);             
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 16px 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 18px; 
+            transition: var(--transition); 
+            animation: slideIn 0.6s cubic-bezier(0.25, 1, 0.5, 1) backwards; 
+        }
+
+        .member-card:hover { 
+            border-color: var(--role-color, var(--accent)); 
+            transform: translateY(-5px); 
+            box-shadow: 0 12px 30px rgb(77, 77, 77), 0 0 15px rgb(255, 255, 255);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 58px;
+            height: 58px;
+            flex-shrink: 0;
+        }
+        
+        .avatar { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 1.5px solid rgba(255, 255, 255, 0.08); 
+            transition: var(--transition);
+        }
+
+        .member-card:hover .avatar {
+            border-color: var(--role-color, var(--accent));
+        }
+
+        /* ปุ่มไฟสีเขียวระบุสถานะออนไลน์ */
+        .online-dot {
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            width: 11px;
+            height: 11px;
+            background-color: #2ed573;
+            border: 2px solid #0d0e12;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #2ed573;
+        }
+
+        .member-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .rank-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .member-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.3px;
+        }
+
+        .fb-link {
+            font-size: 11px;
+            font-weight: 600;
+            color: #0084ff;
+            text-decoration: none;
+            transition: var(--transition);
+            width: fit-content;
+        }
+
+        .fb-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+        
+        .social-links { 
+            margin-left: auto; 
+            display: flex; 
+            gap: 14px; 
+            font-size: 20px; 
+        }
+
+        .social-links a { 
+            color: rgba(255, 255, 255, 0.4);
+            transition: var(--transition); 
+        }
+
+        .social-links a:hover { 
+            transform: scale(1.25) translateY(-2px); 
+        }
+        
+        .site-footer { 
+            padding: 60px 20px 40px; 
+            text-align: center; 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 10px; 
+            letter-spacing: 2px; 
+            opacity: 0.6; 
+            transition: var(--transition); 
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        .site-footer a { 
+            color: var(--accent); 
+            text-decoration: none; 
+            font-weight: 700; 
+            transition: var(--transition);
+        }
+
+        .site-footer a:hover {
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        #memberSearch {
+            width: 100%; 
+            padding: 16px 30px; 
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px solid var(--border); 
+            color: #fff; 
+            border-radius: 50px; 
+            font-size: 14px; 
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+
+        #memberSearch:focus { 
+            border-color: var(--accent); 
+            outline: none; 
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.1);
+        }
+        
+        /* ========================================== */
+        /* 🎨 STYLE เครื่องเล่นเพลงทรงแคปซูล */
+        /* ========================================== */
+        .music-card-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: rgba(10, 10, 12, 0.95);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            max-width: calc(100% - 40px);
+        }
+
+        /* [1] ส่วนกดย่อเก็บ (Capsule Mode) */
+        .music-card-widget.minimized {
+            width: 280px;
+            height: 64px;
+            border-radius: 50px;
+            padding: 6px;
+        }
+
+        .music-card-widget.minimized .expanded-content {
+            display: none;
+        }
+
+        .music-card-widget.minimized .capsule-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            gap: 14px;
+            cursor: pointer;
+        }
+
+        .capsule-cover-wrapper {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .capsule-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .capsule-play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: var(--transition);
+        }
+
+        .capsule-play-overlay i {
+            font-size: 11px;
+            width: 26px;
+            height: 26px;
+            border: 1.5px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 2px;
+            box-sizing: border-box;
+        }
+
+        .capsule-play-overlay i.fa-pause {
+            padding-left: 0;
+        }
+
+        .capsule-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+
+        .capsule-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            color: #55585f;
+            letter-spacing: 1.5px;
+        }
+
+        .capsule-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        /* [2] แผงขยายควบคุมหลัก (Expanded Mode) */
+        .music-card-widget:not(.minimized) {
+            width: 360px;
+            border-radius: 24px;
+        }
+
+        .music-card-widget:not(.minimized) .capsule-content {
+            display: none;
+        }
+
+        .music-card-header {
+            padding: 20px 24px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .now-playing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 2.5px;
+            color: #8f929a;
+        }
+
+        #minimizeIcon {
+            color: #6a6d75;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .music-card-body {
+            padding: 0 24px 24px;
+            transition: all 0.4s ease;
+        }
+
+        .song-info-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 5px;
+        }
+
+        .music-cover {
+            width: 65px;
+            height: 65px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: #191a1f;
+        }
+
+        .song-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .song-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #fff;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song-artist {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #6a6d75;
+            text-transform: uppercase;
+        }
+
+        /* SEEK BAR PROGRESS */
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .progress-bar-wrapper {
+            height: 4px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: #fff;
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+
+        .time-stamps {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: #55585f;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        /* CONTROLS AREA */
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .volume-container i {
+            color: #6a6d75;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .volume-container i:hover {
+            color: #fff;
+        }
+
+        #volumeSlider {
+            width: 75px;
+            height: 3px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        #volumeSlider::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+        }
+        /* ===============================
+           SNOWFLAKE 67
+        ================================ */
+        .snowflake{
+        position:fixed;
+        top:-40px;
+        pointer-events:none;
+        z-index:3;
+        font-family:'Outfit',sans-serif;
+        font-weight:800;
+        color:rgba(255,255,255,.55);
+        text-shadow:0 0 8px rgba(255,255,255,.3);
+        animation:snowfall linear forwards;
+        user-select:none;
+        }
+        
+        @keyframes snowfall{
+        0%{
+        transform:translateY(0) rotate(0deg);
+        opacity:0;
+        }
+        10%{
+        opacity:1;
+        }
+        90%{
+        opacity:.6;
+        }
+        100%{
+        transform:translateY(110vh) rotate(360deg);
+        opacity:0;
+        }
+        }
+        .play-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #000;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 992px) { 
+            .top-nav { padding: 15px 20px; }
+            .hero { padding: 140px 15px 40px; }
+        }
+    </style>
+</head>
+<body onclick="forcePlayAudio()">
+
+    <!-- Weather Effect Layer -->
+    <canvas id="weather-canvas"></canvas>
+    
+    <!-- 🎵 เครื่องเล่นเพลงแบบย่อ-ขยายทรงแคปซูลยา (Capsule Music Widget) -->
+    <div id="musicPlayerCard" class="music-card-widget minimized">
+        
+        <!-- [1] ส่วนกดย่อเก็บ (Capsule Mode) -->
+        <div class="capsule-content">
+            <div class="capsule-cover-wrapper" onclick="toggleMusic(event)">
+                <img id="capsuleCover" src="" class="capsule-cover" alt="Cover">
+                <div class="capsule-play-overlay">
+                    <i id="capsulePlayIcon" class="fa-solid fa-play"></i>
+                </div>
+            </div>
+            <div class="capsule-text" onclick="toggleMinimizePlayer(false)">
+                <span class="capsule-label">MUSIC</span>
+                <span id="capsuleTitle" class="capsule-title">LOADING...</span>
+            </div>
+        </div>
+
+        <!-- [2] แผงขยายควบคุมหลัก (Expanded Mode) -->
+        <div class="expanded-content">
+            <div class="music-card-header" onclick="toggleMinimizePlayer(true)">
+                <div class="now-playing-indicator">
+                    <span class="pulse-dot"></span>
+                    <span>NOW PLAYING</span>
+                </div>
+                <i id="minimizeIcon" class="fa-solid fa-chevron-down"></i>
+            </div>
+            
+            <div class="music-card-body">
+                <div class="song-info-row">
+                    <img id="musicCover" src="" class="music-cover" alt="Cover">
+                    <div class="song-details">
+                        <div id="musicTitle" class="song-title">LOADING TITLE...</div>
+                        <div id="musicArtist" class="song-artist">LOADING ARTIST...</div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar-wrapper" onclick="seekVideo(event)">
+                        <div id="progressBar" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="time-stamps">
+                        <span id="currentTime">0:00</span>
+                        <span id="totalTime">0:00</span>
+                    </div>
+                </div>
+                
+                <div class="controls-row">
+                    <div class="volume-container">
+                        <i id="volumeIcon" class="fa-solid fa-volume-high" onclick="toggleMute()"></i>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="changeVolume(this.value)">
+                    </div>
+                    <div class="play-btn" onclick="toggleMusic(event)">
+                        <i id="musicIcon" class="fa-solid fa-play"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HTML5 Native Audio -->
+    <audio id="audioPlayer" preload="auto"></audio>
+
+    <!-- Navigation Area -->
+    <nav class="top-nav">
+        <div style="font-family:'Orbitron',sans-serif; font-size:11px; letter-spacing:2px; font-weight:700;">
+            <i class="fa-solid fa-shield-halved" style="color:var(--accent); margin-right:5px;"></i> ACTIVE RECRUITS: <span id="countNum" style="color:var(--accent)">0</span>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="hero">
+        <img src="" id="siteLogo" alt="Logo">       
+        <h1 id="siteNameDisplay">SixSeven</h1>
+        <p id="siteDescDisplay" style="font-family:'Orbitron',sans-serif; font-size:11px; opacity:0.6; letter-spacing:6px; font-weight:700; text-transform:uppercase; max-width:600px; margin:10px auto 0;">Not a perfect gang but try to be the best.</p>
+    </header>
+
+    <!-- Search Directory & Filters -->
+    <div style="max-width:750px; margin:0 auto 40px; padding:0 24px;">
+        <input type="text" id="memberSearch" placeholder="SEARCH COMRADE DIRECTORY..." oninput="filterMembers()">
+        <div id="categoryTabs" style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:25px;"></div>
+    </div>
+
+    <!-- Directory Render Target -->
+    <div id="memberSections"></div>
+
+    <!-- Footer of Page -->
+    <footer class="site-footer">
+        <span id="footerTextDisplay">DESIGNED BY header SixSeven</span> | Support by | 
+        <a id="footerLinkLabel" href="https://www.facebook.com/Werkk.nba" target="_blank">Werkk Fakemafuck |</a>
+        <a id="footerLinkLabel" href="https://www.facebook.com/profile.php?id=61589183401521" target="_blank">Well Fakemafuck | </a>
+        <a id="footerLinkLabel" href="https://www.facebook.com/zent.bangbath" target="_blank">Payu Fakemafuck</a>       
+    </footer>
+
+    <script>
+        // =========================================================================
+        // 🛠️ ส่วนสำหรับแก้ไขข้อมูลโค้ดโดยตรง (EDIT YOUR CONFIGURATION HERE)
+        // =========================================================================
+
+        // 1. ตั้งค่าเว็บไซต์ทั่วไป
+        const SITE_CONFIG = {
+            name: "SIXSEVEN", 
+            themeColor: "#F5F5F5", 
+            favicon: "", 
+            logo: "https://media.discordapp.net/attachments/1507366103817523281/1507411801506320536/360_F_1816717214_1qFTY5TZq9RA9ji53kBrGzWGbioDLgT6-Photoroom.png?ex=6a1276e3&is=6a112563&hm=8a3f760402edaa096aeab409bda5a64c4f131008e3272ce74fd5a4026514470b&=&format=webp&quality=lossless", 
+            bgUrl: "", 
+            weather: "none", 
+            footerText: "All player Sixseven", 
+            footerLink: "https://www.facebook.com" 
+        };
+
+        // 2. ตั้งค่าระบบเพลงเบื้องหลัง (YouTube: เฟี้ยวป่ะล่ะ - P9D)
+        const MUSIC_CONFIG = {
+            src: "",
+            title: "เฟี้ยวป่ะล่ะ",
+            
+            artist: "P9D",
+            coverUrl: "",
+            auto: true
+        };
+
+        // 3. กำหนดกลุ่มยศขนาดใหญ่
+        const GROUPS = [
+            { id: "g1", name: "Header SixSeven" },
+            { id: "g2", name: "Leader SixSeven" },         
+            { id: "g3", name: "Member SixSeven" }
+        ];
+
+        // 4. กำหนดตำแหน่งยศและสี (ปุ่มตัวกรอง: ALL, Founders, Leaders, Members)
+        const ROLES = [
+            { id: "r1", name: "Header SixSeven", groupId: "g1", color: "#FFFFFF" },
+            { id: "r2", name: "Leader SixSeven", groupId: "g2", color: "#FFFFFF" },
+            { id: "r3", name: "Member SixSeven", groupId: "g3", color: "#FFFFFF" }  
+        ];
+
+        // 5. รายชื่อสมาชิกตัวอย่าง (ชื่อ Werkk และไม่มีภาพโปรไฟล์ส่วนตัว)
+        const MEMBERS = [
+            { name: "Payu SixSeven", img: "", roleId: "r1", fb: "https://www.facebook.com/Werkk.nba", yt: "https://www.youtube.com/@WerkkNBA", tk: "" },
+            { name: "Well SixSeven", img: "", roleId: "r2", fb: "https://www.facebook.com/Werkk.nba", yt: "https://www.youtube.com/@WerkkNBA", tk: "" },
+            { name: "Werk SixSeven", img: "", roleId: "r3", fb: "https://www.facebook.com/Werkk.nba", yt: "https://www.youtube.com/@WerkkNBA", tk: "" },
+
+        ];
+
+        // =========================================================================
+        // ⚠️ ระบบประมวลผลการแสดงผลภายใน (กรุณาปล่อยส่วนนี้ไว้ตามเดิมเพื่อประสิทธิภาพของระบบ)
+        // =========================================================================
+
+        const blankAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2355555d'><rect width='100%25' height='100%25' fill='%23191a1f'/><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+
+        let player;
+        let isPlaying = false;
+        let activeTab = 'all';
+        let weatherType = SITE_CONFIG.weather || 'none';
+        let progressTimer;
+        let previousVolume = 100;
+        let hasUserInteracted = false;
+
+        const groupMap = {};
+        GROUPS.forEach(g => { groupMap[g.id] = g; });
+
+        const roleMap = {};
+        ROLES.forEach(r => { roleMap[r.id] = r; });
+
+        function applyConfig() {
+            document.title = SITE_CONFIG.name || 'SIXSEVEN';
+            
+            const siteNameDisplay = document.getElementById('siteNameDisplay');
+            if (siteNameDisplay) siteNameDisplay.innerText = SITE_CONFIG.name || 'SIXSEVEN';
+            
+            const faviconEl = document.getElementById('favicon');
+            if (faviconEl) faviconEl.href = SITE_CONFIG.favicon || '';
+            
+            const logoEl = document.getElementById('siteLogo');
+            if (logoEl) logoEl.src = SITE_CONFIG.logo || 'https://via.placeholder.com/150';
+            
+            if(SITE_CONFIG.bgUrl) {
+                document.body.style.backgroundImage = `url('${SITE_CONFIG.bgUrl}')`;
+                document.body.style.background = ""; 
+            } else {
+                document.body.style.backgroundImage = "none";
+                document.body.style.background = "radial-gradient(circle at center, #111215 0%, #060608 100%)";
+            }
+            
+            if(SITE_CONFIG.themeColor) {
+                document.documentElement.style.setProperty('--accent', SITE_CONFIG.themeColor);
+            }
+            
+            weatherType = SITE_CONFIG.weather || 'none'; 
+            initWeather();
+            
+            const footerTextDisplay = document.getElementById('footerTextDisplay');
+            if (footerTextDisplay) footerTextDisplay.innerText = SITE_CONFIG.footerText || 'All player Sixseven';
+            
+            const linkEl = document.getElementById('footerLinkLabel');
+            if (linkEl) linkEl.href = SITE_CONFIG.footerLink || '#';
+
+            const countNum = document.getElementById('countNum');
+            if (countNum) countNum.innerText = MEMBERS.length;
+
+            const musicTitleVal = MUSIC_CONFIG.title || 'UNKNOWN SONG';
+            document.getElementById('musicTitle').innerText = musicTitleVal;
+            document.getElementById('capsuleTitle').innerText = musicTitleVal;
+            
+            document.getElementById('musicArtist').innerText = MUSIC_CONFIG.artist || 'UNKNOWN ARTIST';
+            
+            const coverSource = MUSIC_CONFIG.coverUrl || "https://via.placeholder.com/300x300?text=MUSIC";
+            document.getElementById('musicCover').src = coverSource;
+            document.getElementById('capsuleCover').src = coverSource;
+        }
+
+        function renderTabs() {
+            const container = document.getElementById('categoryTabs');
+            if (!container) return;
+            let html = `<button class="config-btn" style="background:${activeTab==='all'?'var(--accent)':'#131417'}; color:${activeTab==='all'?'#000':'#888'}" onclick="setActiveTab('all')">ALL</button>`;
+            ROLES.forEach(role => {
+                const active = activeTab === role.id;
+                html += `<button class="config-btn" style="background:${active?'var(--accent)':'#131417'}; color:${active?'#000':'#888'}" onclick="setActiveTab('${role.id}')">${role.name}</button>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function setActiveTab(id) { 
+            activeTab = id; 
+            renderTabs(); 
+            filterMembers(); 
+        }
+
+        function filterMembers() {
+            const memberSearch = document.getElementById('memberSearch');
+            const term = memberSearch ? memberSearch.value.toLowerCase().trim() : '';
+            const wrapper = document.getElementById('memberSections');
+            if (!wrapper) return;
+            wrapper.innerHTML = '';
+            
+            const structure = {};   
+            
+            MEMBERS.forEach(m => {
+                const role = roleMap[m.roleId];
+                if (!role) return;
+                const gId = role.groupId;
+                const group = groupMap[gId];
+                const gName = group ? group.name : "UNASSIGNED CONTINGENT";
+                
+                if (m.name && m.name.toLowerCase().includes(term) && (activeTab === 'all' || m.roleId === activeTab)) {
+                    if (!structure[gId]) {
+                        structure[gId] = { name: gName, items: [] };
+                    }
+                    structure[gId].items.push({...m, role});
+                }
+            });
+
+            Object.keys(structure).forEach(gId => {
+                const group = structure[gId];
+                const countStr = String(group.items.length).padStart(2, '0');
+                
+                let html = `
+                    <section class="category-section">
+                        <div class="category-header">
+                            ${group.name} <span class="header-count">/ ${countStr}</span>
+                        </div>
+                        <div class="member-grid">
+                `;
+                
+                group.items.forEach((m, i) => {
+                    const imgUrl = m.img ? m.img : blankAvatar;
+                    const roleColor = m.role.color || '#ffc107';
+                    const iconAndLabel = m.role.name === 'Founders' ? '👑 FOUNDER' : m.role.name === 'Leaders' ? '👑 LEADER' : 'MEMBER';
+                    
+                    html += `
+                        <div class="member-card" style="--role-color: ${roleColor}; animation-delay:${i*0.04}s">
+                            <div class="avatar-wrapper">
+                                <img src="${imgUrl}" class="avatar" alt="Avatar" onerror="this.src='${blankAvatar}'">
+                                <span class="online-dot"></span>
+                            </div>
+                            <div class="member-details">
+                                <span class="rank-badge" style="color: ${roleColor}">${iconAndLabel}</span>
+                                <div class="member-name">${m.name}</div>
+                                <a href="${m.fb}" target="_blank" class="fb-link">Facebook</a>
+                            </div>
+                        </div>`;
+                });
+                html += `</div></section>`;
+                wrapper.innerHTML += html;
+            });
+
+            if(!Object.keys(structure).length) {
+                wrapper.innerHTML = '<p style="text-align:center; opacity:0.3; padding:100px 0; font-family:\'Orbitron\',sans-serif; letter-spacing: 2px; font-size: 11px;">UNABLE TO RESOLVE COMRADE ENTRIES</p>';
+            }
+        }
+
+        // ==========================================
+        // 🎼 ระบบควบคุมเครื่องเล่นเพลงและเมาส์ชี้เพื่อขยาย
+        // ==========================================
+
+        function toggleMinimizePlayer(minimizeVal) {
+            const card = document.getElementById('musicPlayerCard');
+            if (minimizeVal) {
+                card.classList.add('minimized');
+            } else {
+                card.classList.remove('minimized');
+            }
+        }
+
+        // ผูกเมาส์โดน (Hover) เพื่อเปิดตัวเต็ม / เมาส์ออกเพื่อเก็บลงเป็นแคปซูลยา
+        const musicCard = document.getElementById('musicPlayerCard');
+        if (musicCard) {
+            musicCard.addEventListener('mouseenter', () => {
+                toggleMinimizePlayer(false); // ขยายเต็มตัว
+            });
+            musicCard.addEventListener('mouseleave', () => {
+                toggleMinimizePlayer(true); // ย่อตัวลง
+            });
+        }
+
+        function toggleMusic(event) {
+            if (event) event.stopPropagation();
+
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+            } else {
+                audioPlayer.pause();
+            }
+        }
+
+        function startProgressLoop() {
+            clearInterval(progressTimer);
+            progressTimer = setInterval(() => {
+                if (player && typeof player.getCurrentTime === 'function' && isPlaying) {
+                    const current = player.getCurrentTime();
+                    const duration = player.getDuration();
+                    if (duration > 0) {
+                        const pct = (current / duration) * 100;
+                        document.getElementById('progressBar').style.width = pct + '%';
+                        document.getElementById('currentTime').innerText = formatTime(current);
+                        document.getElementById('totalTime').innerText = formatTime(duration);
+                    }
+                }
+            }, 500);
+        }
+
+        function stopProgressLoop() {
+            clearInterval(progressTimer);
+        }
+
+        function formatTime(secs) {
+            const m = Math.floor(secs / 60);
+            const s = Math.floor(secs % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function seekVideo(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const pct = offsetX / rect.width;
+
+            audioPlayer.currentTime = audioPlayer.duration * pct;
+        }
+
+        function changeVolume(val) {
+            audioPlayer.volume = val / 100;
+
+            updateVolumeIcon(val);
+
+            previousVolume = val;
+        }
+
+        function toggleMute() {
+            const slider = document.getElementById('volumeSlider');
+
+            if (audioPlayer.muted || slider.value == 0) {
+                audioPlayer.muted = false;
+
+                const restoreVol = previousVolume > 0 ? previousVolume : 100;
+
+                audioPlayer.volume = restoreVol / 100;
+
+                slider.value = restoreVol;
+
+                updateVolumeIcon(restoreVol);
+            } else {
+                audioPlayer.muted = true;
+
+                slider.value = 0;
+
+                updateVolumeIcon(0);
+            }
+        }
+
+        function updateVolumeIcon(val) {
+            const icon = document.getElementById('volumeIcon');
+            if (val == 0) {
+                icon.className = 'fa-solid fa-volume-xmark';
+            } else if (val < 50) {
+                icon.className = 'fa-solid fa-volume-low';
+            } else {
+                icon.className = 'fa-solid fa-volume-high';
+            }
+        }
+
+        
+        // HTML5 Native Audio Player
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        function initializeAudioPlayer() {
+            audioPlayer.src = MUSIC_CONFIG.src;
+            audioPlayer.currentTime = 45;
+            audioPlayer.loop = true;
+            audioPlayer.volume = 1;
+
+            if (MUSIC_CONFIG.auto) {
+
+    audioPlayer.muted = true;
+
+    audioPlayer.play().then(() => {
+
+        audioPlayer.muted = false;
+
+        isPlaying = true;
+
+        updatePlayIcons(true);
+
+    }).catch(() => {
+
+        console.log("Autoplay blocked");
+
+    });
+}
+
+            audioPlayer.addEventListener('timeupdate', () => {
+                const current = audioPlayer.currentTime;
+                const duration = audioPlayer.duration || 0;
+
+                if (duration > 0) {
+                    const pct = (current / duration) * 100;
+
+                    document.getElementById('progressBar').style.width = pct + '%';
+                    document.getElementById('currentTime').innerText = formatTime(current);
+                    document.getElementById('totalTime').innerText = formatTime(duration);
+                }
+            });
+
+            audioPlayer.addEventListener('play', () => {
+                isPlaying = true;
+                updatePlayIcons(true);
+            });
+
+            audioPlayer.addEventListener('pause', () => {
+                isPlaying = false;
+                updatePlayIcons(false);
+            });
+        }
+
+        function updatePlayIcons(playing) {
+            const icon = document.getElementById('musicIcon');
+            const capIcon = document.getElementById('capsulePlayIcon');
+
+            if (playing) {
+                icon.className = 'fa-solid fa-pause';
+                capIcon.className = 'fa-solid fa-pause';
+            } else {
+                icon.className = 'fa-solid fa-play';
+                capIcon.className = 'fa-solid fa-play';
+            }
+        }
+// --- WEATHER RAIN/SNOW ENGINE ---
+        const canvas = document.getElementById('weather-canvas'), ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function initWeather() {
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight;
+            particles = []; 
+            if(weatherType === 'none') return;
+            
+            const maxParticles = weatherType === 'rain' ? 120 : 80;
+            for(let i=0; i<maxParticles; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    speed: weatherType === 'rain' ? (Math.random() * 5 + 7) : (Math.random() * 1.5 + 0.8),
+                    radius: weatherType === 'rain' ? Math.random() * 1 + 1 : Math.random() * 2.5 + 1.2,
+                    drift: Math.random() * 2 - 1,
+                    length: weatherType === 'rain' ? Math.random() * 15 + 10 : 0
+                });
+            }
+        }
+
+        function drawWeather() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if(weatherType !== 'none') {
+                if(weatherType === 'snow') {
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+                    particles.forEach(p => {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        p.y += p.speed;
+                        p.x += Math.sin(p.y / 30) * 0.5;
+                        
+                        if(p.y > canvas.height) {
+                            p.y = -10;
+                            p.x = Math.random() * canvas.width;
+                        }
+                    });
+                } else if(weatherType === 'rain') {
+                    ctx.strokeStyle = "rgba(174, 219, 255, 0.4)";
+                    ctx.lineWidth = 1.5;
+                    particles.forEach(p => {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p.x + p.drift, p.y + p.length);
+                        ctx.stroke();
+                        p.y += p.speed;
+                        p.x += p.drift * 0.1;
+                        
+                        if(p.y > canvas.height) {
+                            p.y = -p.length;
+                            p.x = Math.random() * canvas.width;
+                        }
+                    });
+                }
+            }
+            requestAnimationFrame(drawWeather);
+        }
+        
+        window.addEventListener('resize', initWeather);
+        
+        applyConfig();
+        renderTabs();
+        filterMembers();
+        drawWeather();
+        initializeAudioPlayer();
+        function forcePlayAudio() {
+
+    audioPlayer.play();
+
+    audioPlayer.muted = false;
+
+}
+
+ const snowChars = ['67', '6', '7', '67'];
+
+    function createSnow() {
+      const snow = document.createElement('div');
+
+      snow.className = 'snowflake';
+      snow.textContent = snowChars[Math.floor(Math.random() * snowChars.length)];
+
+      snow.style.left = Math.random() * 100 + 'vw';
+      snow.style.fontSize = (Math.random() * 20+11) + 'px';
+      snow.style.opacity = Math.random() * .55 + .18;
+      snow.style.animationDuration = (Math.random() * 7 + 5) + 's';
+
+      document.body.appendChild(snow);
+
+      setTimeout(() => snow.remove(), 13000);
+    }
+
+setInterval(createSnow, 500);
+    for (let i = 0; i < 8; i++) setTimeout(createSnow, i * 300);
+    
+    </script>
+</body>
+</html>

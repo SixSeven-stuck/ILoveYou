@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ผมชอบพี่</title>
+<title>I LUV YOU</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -13,10 +13,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 #starsBg{position:absolute;inset:0;pointer-events:none}
 .box{
   position:relative;z-index:2;
-  border:2px solid rgba(255,150,200,0.7);
+  border:2px solid rgba(125, 7, 155, 0.7);
   padding:38px 35px;width:320px;max-width:90%;
   text-align:center;background:rgba(20,0,15,0.85);
-  box-shadow:0 0 40px rgba(255,80,160,0.15),inset 0 0 30px rgba(255,80,160,0.05);
+  box-shadow:0 0 40px rgb(225, 0, 255),inset 0 0 30px rgb(255, 0, 115);
 }
 .dots{position:absolute;top:10px;left:12px;display:flex;gap:6px}
 .dots span{width:9px;height:9px;border-radius:50%;display:inline-block}
@@ -24,12 +24,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 .dots span:nth-child(2){background:#febc2e}
 .dots span:nth-child(3){background:#28c840}
 .question{color:#fff;font-family:'Press Start 2P';font-size:13px;line-height:2.2;margin-bottom:28px;text-shadow:0 0 20px rgba(255,100,180,0.5)}
-.question span{color:#ff88cc}
+.question span{color:#910ac7}
 .buttons{display:flex;justify-content:center;gap:14px}
 button{font-family:'Press Start 2P';font-size:10px;border:2px solid;padding:11px 22px;cursor:pointer;letter-spacing:1px;transition:transform .12s,box-shadow .12s}
-.yes{background:#fff;color:#000;border-color:#fff}
-.yes:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(255,200,220,0.6)}
-.no{background:#000;color:#fff;border-color:#fff}
+.yes{background:#8f05df;color:#000;border-color:#ff00b3}
+.yes:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(255, 0, 179, 0.6)}
+.no{background:#000;color:#ff0000;border-color:#ff0000}
 #page2{display:none;position:relative;background:#000}
 #page2.show{display:block}
 canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -52,7 +52,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
         z-index:3;
         font-family:'Outfit',sans-serif;
         font-weight:800;
-        color:rgb(255, 0, 200);
+        color:rgb(142, 21, 190);
         text-shadow:0 0 8px rgba(65, 61, 63, 0.507);
         animation:snowfall linear forwards;
         user-select:none;
@@ -84,7 +84,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #db01f8;
+            color: #920b9e;
             font-size: 14px;
             transition: var(--transition);
         }
@@ -112,10 +112,11 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
   </div>
 </div>
 
+<!-- 🎵 วางลิงก์เพลงตรง src="..." ได้เลย -->
 <audio id="bgAudio" loop src="https://files.catbox.moe/quu7jt.mp3"></audio>
 
 <script>
-
+/* ── Stars ── */
 var sC=document.getElementById('starsBg'),sX=sC.getContext('2d'),ST=[];
 function initStars(){
   sC.width=innerWidth;sC.height=innerHeight;ST=[];
@@ -131,6 +132,8 @@ window.addEventListener('resize',initStars);
 
 
 
+
+/* ── Music ── */
 var audio=document.getElementById('bgAudio');
 
 function playMusic(){
@@ -146,6 +149,7 @@ function togglePlay(){
   else{audio.pause();btn.textContent='▶ PLAY';}
 }
 
+/* ── No ── */
 function runAway(){
   var b=document.getElementById('noBtn');
   b.style.position='fixed';
@@ -153,6 +157,7 @@ function runAway(){
   b.style.top=Math.random()*(innerHeight-60)+'px';
 }
 
+/* ── Start ── */
 function startLove(){
   document.getElementById('page1').style.display='none';
   document.getElementById('page2').classList.add('show');
@@ -164,6 +169,7 @@ function startLove(){
 }
 
 
+/* ── Heart (โค้ดเดิมของคุณ) ── */
 function initHeart(){
   var cvs=document.getElementById('heartCanvas');
   var W=innerWidth,H=innerHeight;
@@ -177,27 +183,28 @@ function initHeart(){
   for(var i=0;i<N;i++){
     var t=i/N*Math.PI*2;
     var sc=8+Math.random()*2;
-    pts.push({tx:hx(t,sc),ty:hy(t,sc),x:cx+Math.random()*40-20,y:cy+Math.random()*40-20,alpha:0,delay:i*3,sz:11+Math.random()*4,phase:Math.random()*Math.PI*2,speed:0.04+Math.random()*0.02});
+    pts.push({tx:hx(t,sc),ty:hy(t,sc),x:cx+Math.random()*60-20,y:cy+Math.random()*60-20,alpha:0,delay:i*3,sz:11+Math.random()*4,phase:Math.random()*Math.PI*2,speed:0.04+Math.random()*0.02});
   }
   var frame=0;
   function draw(){
     ctx.clearRect(0,0,W,H);frame++;
     for(var i=0;i<pts.length;i++){
       var p=pts[i];if(frame<p.delay)continue;
-      p.x=p.x+(p.tx-p.x)*0.04;p.y=p.y+(p.ty-p.y)*0.04;
-      p.alpha=Math.min(1,p.alpha+0.015);
-      var pulse=0.65+0.35*Math.sin(frame*p.speed+p.phase);
+      p.x=p.x+(p.tx-p.x)*0.08;p.y=p.y+(p.ty-p.y)*0.08;
+      p.alpha=Math.min(1,p.alpha+0.055);
+      var pulse=0.80+0.55*Math.sin(frame*p.speed+p.phase);
       ctx.save();ctx.globalAlpha=p.alpha*pulse;
       ctx.font='bold '+p.sz+'px Georgia,serif';
       ctx.fillStyle='#f090c0';ctx.textAlign='center';
-      ctx.fillText('I love you',p.x,p.y);ctx.restore();
+      ctx.fillText('I LUV U',p.x,p.y);ctx.restore();
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 
- const snowChars = ['i','LUV','YOU','I','LUV','YOU'];
+
+const snowChars = ['♥','💜','♡' ];
 
     function createSnow() {
       const snow = document.createElement('div');

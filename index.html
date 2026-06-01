@@ -44,6 +44,51 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
   color:rgba(255,150,200,0.8);padding:7px 14px;cursor:pointer;
 }
 #playBtn:hover{border-color:#ff88cc;color:#ff88cc}
+
+.snowflake{
+        position:fixed;
+        top:-40px;
+        pointer-events:none;
+        z-index:3;
+        font-family:'Outfit',sans-serif;
+        font-weight:800;
+        color:rgb(255, 0, 200);
+        text-shadow:0 0 8px rgba(65, 61, 63, 0.507);
+        animation:snowfall linear forwards;
+        user-select:none;
+        }
+        
+        @keyframes snowfall{
+        0%{
+        transform:translateY(0) rotate(0deg);
+        opacity:0;
+        }
+        10%{
+        opacity:1;
+        }
+        90%{
+        opacity:.6;
+        }
+        100%{
+        transform:translateY(110vh) rotate(360deg);
+        opacity:0;
+        }
+        }
+        .play-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #0004ff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #db01f8;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
 </style>
 </head>
 <body>
@@ -70,6 +115,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 <audio id="bgAudio" loop src="https://files.catbox.moe/quu7jt.mp3"></audio>
 
 <script>
+
 var sC=document.getElementById('starsBg'),sX=sC.getContext('2d'),ST=[];
 function initStars(){
   sC.width=innerWidth;sC.height=innerHeight;ST=[];
@@ -82,6 +128,8 @@ function drawStars(){
 }
 initStars();drawStars();
 window.addEventListener('resize',initStars);
+
+
 
 var audio=document.getElementById('bgAudio');
 
@@ -115,6 +163,7 @@ function startLove(){
   setTimeout(initHeart,100);
 }
 
+
 function initHeart(){
   var cvs=document.getElementById('heartCanvas');
   var W=innerWidth,H=innerHeight;
@@ -147,6 +196,28 @@ function initHeart(){
   }
   draw();
 }
+
+ const snowChars = ['i','LUV','YOU','I','LUV','YOU'];
+
+    function createSnow() {
+      const snow = document.createElement('div');
+
+      snow.className = 'snowflake';
+      snow.textContent = snowChars[Math.floor(Math.random() * snowChars.length)];
+
+      snow.style.left = Math.random() * 100 + 'vw';
+      snow.style.fontSize = (Math.random() * 11+13) + 'px';
+      snow.style.opacity = Math.random() * .55 + .18;
+      snow.style.animationDuration = (Math.random() * 7 + 5) + 's';
+
+      document.body.appendChild(snow);
+
+      setTimeout(() => snow.remove(), 13000);
+    }
+
+setInterval(createSnow, 500);
+    for (let i = 0; i < 8; i++) setTimeout(createSnow, i * 300);
+
 </script>
 </body>
 </html>

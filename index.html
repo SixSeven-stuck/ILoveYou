@@ -112,11 +112,11 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
   </div>
 </div>
 
-<!-- 🎵 วางลิงก์เพลงตรง src="..." ได้เลย -->
+
 <audio id="bgAudio" loop src="https://files.catbox.moe/quu7jt.mp3"></audio>
 
 <script>
-/* ── Stars ── */
+
 var sC=document.getElementById('starsBg'),sX=sC.getContext('2d'),ST=[];
 function initStars(){
   sC.width=innerWidth;sC.height=innerHeight;ST=[];
@@ -133,7 +133,7 @@ window.addEventListener('resize',initStars);
 
 
 
-/* ── Music ── */
+
 var audio=document.getElementById('bgAudio');
 
 function playMusic(){
@@ -149,7 +149,7 @@ function togglePlay(){
   else{audio.pause();btn.textContent='▶ PLAY';}
 }
 
-/* ── No ── */
+
 function runAway(){
   var b=document.getElementById('noBtn');
   b.style.position='fixed';
@@ -157,7 +157,7 @@ function runAway(){
   b.style.top=Math.random()*(innerHeight-60)+'px';
 }
 
-/* ── Start ── */
+
 function startLove(){
   document.getElementById('page1').style.display='none';
   document.getElementById('page2').classList.add('show');
@@ -169,7 +169,7 @@ function startLove(){
 }
 
 
-/* ── Heart (โค้ดเดิมของคุณ) ── */
+
 function initHeart(){
   var cvs=document.getElementById('heartCanvas');
   var W=innerWidth,H=innerHeight;

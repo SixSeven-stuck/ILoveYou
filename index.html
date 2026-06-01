@@ -190,13 +190,13 @@ function initHeart(){
     ctx.clearRect(0,0,W,H);frame++;
     for(var i=0;i<pts.length;i++){
       var p=pts[i];if(frame<p.delay)continue;
-      p.x=p.x+(p.tx-p.x)*0.08;p.y=p.y+(p.ty-p.y)*0.08;
-      p.alpha=Math.min(1,p.alpha+0.055);
-      var pulse=0.80+0.55*Math.sin(frame*p.speed+p.phase);
+      p.x=p.x+(p.tx-p.x)*0.04;p.y=p.y+(p.ty-p.y)*0.04;
+      p.alpha=Math.min(1,p.alpha+0.015);
+      var pulse=0.65+0.35*Math.sin(frame*p.speed+p.phase);
       ctx.save();ctx.globalAlpha=p.alpha*pulse;
       ctx.font='bold '+p.sz+'px Georgia,serif';
       ctx.fillStyle='#f090c0';ctx.textAlign='center';
-      ctx.fillText('I LUV U',p.x,p.y);ctx.restore();
+      ctx.fillText('I love you',p.x,p.y);ctx.restore();
     }
     requestAnimationFrame(draw);
   }

@@ -1,127 +1,152 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Love</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-#app{background:#000;width:100%;min-height:700px;overflow:hidden;position:relative}
-#p1{display:flex;align-items:center;justify-content:center;height:700px;background:#000}
-.dlg{border:3px solid #fff;padding:36px 32px 32px;text-align:center;position:relative;background:#000;max-width:300px;width:90%}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+#page1,#page2{width:100%;height:100vh}
+#page1{display:flex;justify-content:center;align-items:center;background:#000;position:relative;overflow:hidden}
+#starsBg{position:absolute;inset:0;pointer-events:none}
+.box{
+  position:relative;z-index:2;
+  border:2px solid rgba(255,150,200,0.7);
+  padding:38px 35px;width:320px;max-width:90%;
+  text-align:center;background:rgba(20,0,15,0.85);
+  box-shadow:0 0 40px rgba(255,80,160,0.15),inset 0 0 30px rgba(255,80,160,0.05);
+}
 .dots{position:absolute;top:10px;left:12px;display:flex;gap:6px}
-.dots i{width:9px;height:9px;border:2px solid #fff;display:block}
-.q{font-family:'Press Start 2P',monospace;font-size:15px;color:#fff;margin:8px 0 28px;line-height:1.9}
-.btns{display:flex;gap:20px;justify-content:center}
-.by,.bn{font-family:'Press Start 2P',monospace;font-size:12px;padding:10px 22px;border:3px solid #fff;cursor:pointer;transition:transform .15s}
-.by{background:#fff;color:#000}
-.by:hover{background:#eee}
-.bn{background:#000;color:#fff;position:relative}
-#p2{display:none;height:700px;background:#000;position:relative;overflow:hidden;align-items:center;justify-content:center;flex-direction:column}
-#p2.on{display:flex}
-#hc{position:absolute;top:0;left:0;width:100%;height:100%}
-.rose{position:relative;z-index:10;width:160px;height:220px;animation:flt 3.5s ease-in-out infinite}
-@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.sp{position:absolute;z-index:11;color:#fff;font-size:16px;animation:spk 2s infinite}
-.sp:nth-child(1){top:52%;left:8%;animation-delay:0s}
-.sp:nth-child(2){top:58%;right:10%;animation-delay:.8s}
-.sp:nth-child(3){top:42%;right:18%;animation-delay:1.5s}
-@keyframes spk{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.3)}} 
+.dots span{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dots span:nth-child(1){background:#ff5f57}
+.dots span:nth-child(2){background:#febc2e}
+.dots span:nth-child(3){background:#28c840}
+.question{color:#fff;font-family:'Press Start 2P';font-size:13px;line-height:2.2;margin-bottom:28px;text-shadow:0 0 20px rgba(255,100,180,0.5)}
+.question span{color:#ff88cc}
+.buttons{display:flex;justify-content:center;gap:14px}
+button{font-family:'Press Start 2P';font-size:10px;border:2px solid;padding:11px 22px;cursor:pointer;letter-spacing:1px;transition:transform .12s,box-shadow .12s}
+.yes{background:#fff;color:#000;border-color:#fff}
+.yes:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(255,200,220,0.6)}
+.no{background:#000;color:#fff;border-color:#fff}
+#page2{display:none;position:relative;background:#000}
+#page2.show{display:block}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+#musicBar{
+  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  z-index:10;display:none;align-items:center;gap:10px;
+}
+#musicBar.show{display:flex}
+#playBtn{
+  font-family:'Press Start 2P';font-size:9px;
+  background:transparent;border:1px solid rgba(255,150,200,0.5);
+  color:rgba(255,150,200,0.8);padding:7px 14px;cursor:pointer;
+}
+#playBtn:hover{border-color:#ff88cc;color:#ff88cc}
 </style>
+</head>
+<body>
 
-<div id="app">
-<div id="p1">
-  <div class="dlg">
-    <div class="dots"><i></i><i></i><i></i></div>
-    <div class="q">Do you love me?</div>
-    <div class="btns">
-      <button class="by" onclick="go2()">Yes</button>
-      <button class="bn" id="no" onmouseover="flee(event)" ontouchstart="flee(event)">No</button>
+<div id="page1">
+  <canvas id="starsBg"></canvas>
+  <div class="box">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="question">DO YOU<br><span>LOVE ME?</span></div>
+    <div class="buttons">
+      <button class="yes" onclick="startLove()">YES ♥</button>
+      <button class="no" id="noBtn" onmouseover="runAway()" ontouchstart="runAway()">NO</button>
     </div>
   </div>
 </div>
 
-<div id="p2">
-  <canvas id="hc"></canvas>
-  <div class="rose">
-    <svg viewBox="0 0 160 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;filter:drop-shadow(0 0 14px #e080c0)">
-    </svg>
-    <div class="sp">✦</div>
-    <div class="sp">✦</div>
-    <div class="sp">✦</div>
+<div id="page2">
+  <canvas id="heartCanvas"></canvas>
+  <div id="musicBar">
+    <button id="playBtn" onclick="togglePlay()">❚❚ PAUSE</button>
   </div>
 </div>
-</div>
+
+<audio id="bgAudio" loop src="https://files.catbox.moe/quu7jt.mp3"></audio>
 
 <script>
-var noMoved = false;
-function flee(e){
-  var btn = document.getElementById('no');
-  var app = document.getElementById('app');
-  var r = app.getBoundingClientRect();
-  var x = Math.random()*(r.width-80);
-  var y = Math.random()*(300)+180;
-  btn.style.position='absolute';
-  btn.style.left=x+'px';
-  btn.style.top=y+'px';
-  btn.style.transition='left .2s,top .2s,transform .2s';
-  btn.style.transform='rotate('+(Math.random()*30-15)+'deg)';
+var sC=document.getElementById('starsBg'),sX=sC.getContext('2d'),ST=[];
+function initStars(){
+  sC.width=innerWidth;sC.height=innerHeight;ST=[];
+  for(var i=0;i<160;i++)ST.push({x:Math.random()*sC.width,y:Math.random()*sC.height,r:Math.random()*1.3+0.2,a:Math.random(),da:Math.random()*.012+.003,pk:Math.random()>.7});
+}
+function drawStars(){
+  sX.clearRect(0,0,sC.width,sC.height);
+  ST.forEach(function(s){s.a+=s.da;if(s.a>1||s.a<0)s.da*=-1;sX.globalAlpha=s.a*.7+.1;sX.fillStyle=s.pk?'#ffaadd':'#fff';sX.beginPath();sX.arc(s.x,s.y,s.r,0,Math.PI*2);sX.fill();});
+  sX.globalAlpha=1;requestAnimationFrame(drawStars);
+}
+initStars();drawStars();
+window.addEventListener('resize',initStars);
+
+var audio=document.getElementById('bgAudio');
+
+function playMusic(){
+  if(!audio.src||audio.src===window.location.href)return;
+  audio.volume=0;
+  audio.play().catch(function(){});
+  var v=0,fi=setInterval(function(){v+=0.04;if(v>=0.85){v=0.85;clearInterval(fi);}audio.volume=v;},80);
 }
 
-function go2(){
-  document.getElementById('p1').style.display='none';
-  var p2=document.getElementById('p2');
-  p2.classList.add('on');
+function togglePlay(){
+  var btn=document.getElementById('playBtn');
+  if(audio.paused){audio.play();btn.textContent='❚❚ PAUSE';}
+  else{audio.pause();btn.textContent='▶ PLAY';}
+}
+
+function runAway(){
+  var b=document.getElementById('noBtn');
+  b.style.position='fixed';
+  b.style.left=Math.random()*(innerWidth-120)+'px';
+  b.style.top=Math.random()*(innerHeight-60)+'px';
+}
+
+function startLove(){
+  document.getElementById('page1').style.display='none';
+  document.getElementById('page2').classList.add('show');
+  if(audio.src&&audio.src!==window.location.href){
+    document.getElementById('musicBar').classList.add('show');
+    playMusic();
+  }
   setTimeout(initHeart,100);
 }
 
 function initHeart(){
-  var cvs=document.getElementById('hc');
-  var W=cvs.offsetWidth||380;
-  var H=cvs.offsetHeight||700;
-  cvs.width=W; cvs.height=H;
+  var cvs=document.getElementById('heartCanvas');
+  var W=innerWidth,H=innerHeight;
+  cvs.width=W;cvs.height=H;
   var ctx=cvs.getContext('2d');
-
-  var cx=W/2, cy=H/2-30;
+  var cx=W/2,cy=H/2-30;
   var pts=[];
-
   function hx(t,s){return cx+s*16*Math.pow(Math.sin(t),3)}
   function hy(t,s){return cy-s*(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))}
-
   var N=60;
   for(var i=0;i<N;i++){
     var t=i/N*Math.PI*2;
     var sc=8+Math.random()*2;
-    pts.push({
-      tx:hx(t,sc), ty:hy(t,sc),
-      x:cx+Math.random()*40-20,
-      y:cy+Math.random()*40-20,
-      alpha:0,
-      delay:i*3,
-      sz:11+Math.random()*4,
-      phase:Math.random()*Math.PI*2,
-      speed:0.04+Math.random()*0.02
-    });
+    pts.push({tx:hx(t,sc),ty:hy(t,sc),x:cx+Math.random()*40-20,y:cy+Math.random()*40-20,alpha:0,delay:i*3,sz:11+Math.random()*4,phase:Math.random()*Math.PI*2,speed:0.04+Math.random()*0.02});
   }
-
   var frame=0;
   function draw(){
-    ctx.clearRect(0,0,W,H);
-    frame++;
+    ctx.clearRect(0,0,W,H);frame++;
     for(var i=0;i<pts.length;i++){
-      var p=pts[i];
-      if(frame<p.delay) continue;
-      var prog=Math.min(1,(frame-p.delay)*0.025);
-      p.x=p.x+(p.tx-p.x)*0.04;
-      p.y=p.y+(p.ty-p.y)*0.04;
+      var p=pts[i];if(frame<p.delay)continue;
+      p.x=p.x+(p.tx-p.x)*0.04;p.y=p.y+(p.ty-p.y)*0.04;
       p.alpha=Math.min(1,p.alpha+0.015);
       var pulse=0.65+0.35*Math.sin(frame*p.speed+p.phase);
-      ctx.save();
-      ctx.globalAlpha=p.alpha*pulse;
+      ctx.save();ctx.globalAlpha=p.alpha*pulse;
       ctx.font='bold '+p.sz+'px Georgia,serif';
-      ctx.fillStyle='#f090c0';
-      ctx.textAlign='center';
-      ctx.fillText('I love you',p.x,p.y);
-      ctx.restore();
+      ctx.fillStyle='#f090c0';ctx.textAlign='center';
+      ctx.fillText('I love you',p.x,p.y);ctx.restore();
     }
     requestAnimationFrame(draw);
   }
   draw();
 }
 </script>
+</body>
+</html>

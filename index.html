@@ -30,16 +30,16 @@ button{font-family:'Press Start 2P',monospace;font-size:9px;border:2px solid;pad
 #page2.show{display:block}
 canvas#heartCanvas{position:absolute;inset:0;width:100%;height:100%}
 
-/* รูปภาพตรงกลางใส่ใน heart shape */
+
 .center-photo-wrap{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
   z-index:5;
-  width:160px;height:160px;
+  width:170px;height:100px;
   animation:bigBob 1.6s ease-in-out infinite;
   pointer-events:none;
 }
-/* clip เป็นรูปหัวใจ */
+
 .center-photo-wrap svg{position:absolute;width:0;height:0}
 .center-photo-img{
   width:160px;height:160px;
@@ -48,7 +48,7 @@ canvas#heartCanvas{position:absolute;inset:0;width:100%;height:100%}
   border:none;
   display:block;
 }
-/* fallback ถ้าไม่มีรูป: แสดง emoji */
+
 .center-photo-img.no-src{display:none}
 .center-kitty-fallback{
   font-size:72px;
@@ -57,7 +57,6 @@ canvas#heartCanvas{position:absolute;inset:0;width:100%;height:100%}
 }
 .center-kitty-fallback.show{display:block}
 
-/* glow ring รอบหัวใจ */
 .heart-glow{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
@@ -103,7 +102,7 @@ canvas#heartCanvas{position:absolute;inset:0;width:100%;height:100%}
 <div id="page2">
   <canvas id="heartCanvas"></canvas>
 
-  <!-- SVG clipPath รูปหัวใจ (ซ่อนไว้) -->
+  
   <svg style="position:absolute;width:0;height:0">
     <defs>
       <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
@@ -121,8 +120,6 @@ canvas#heartCanvas{position:absolute;inset:0;width:100%;height:100%}
   </svg>
 
 
-
-  <!-- รูปภาพ clip หัวใจ — เปลี่ยน src="YOUR_PHOTO.jpg" เป็นรูปของคุณ -->
   <div class="center-photo-wrap">
     <img class="center-photo-img" id="photoImg"
       src="https://files.catbox.moe/mmu9tl.jpg"
@@ -131,7 +128,6 @@ canvas#heartCanvas{position:absolute;inset:0;width:100%;height:100%}
     >
   </div>
 
-  <!-- fallback ถ้าไม่ใส่รูป -->
   <div class="center-kitty-fallback" id="fallbackKitty" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5">🐱</div>
 
   <div class="love-text" id="loveText"></div>
@@ -143,21 +139,20 @@ canvas#heartCanvas{position:absolute;inset:0;width:100%;height:100%}
 <audio id="bgAudio" loop src="https://files.catbox.moe/kj4py0.mp4"></audio>
 
 <script>
-/* ---- stars ---- */
+
 var sC=document.getElementById('starsBg'),sX=sC.getContext('2d'),ST=[];
 function initStars(){sC.width=innerWidth;sC.height=innerHeight;ST=[];for(var i=0;i<180;i++)ST.push({x:Math.random()*sC.width,y:Math.random()*sC.height,r:Math.random()*1.4+0.2,a:Math.random(),da:Math.random()*.014+.003,pk:Math.random()>.6});}
 function drawStars(){sX.clearRect(0,0,sC.width,sC.height);ST.forEach(function(s){s.a+=s.da;if(s.a>1||s.a<0)s.da*=-1;sX.globalAlpha=s.a*.75+.1;sX.fillStyle=s.pk?'#ffaaee':'#fff';sX.beginPath();sX.arc(s.x,s.y,s.r,0,Math.PI*2);sX.fill();});sX.globalAlpha=1;requestAnimationFrame(drawStars);}
 initStars();drawStars();window.addEventListener('resize',initStars);
 
-/* ---- audio ---- */
+
 var audio=document.getElementById('bgAudio');
 function playMusic(){audio.volume=0;audio.play().catch(function(){});var v=0,fi=setInterval(function(){v+=0.04;if(v>=0.8){v=0.8;clearInterval(fi);}audio.volume=v;},80);}
 function togglePlay(){var btn=document.getElementById('playBtn');if(audio.paused){audio.play();btn.textContent='❚❚ PAUSE';}else{audio.pause();btn.textContent='▶ PLAY';}}
 
-/* ---- no button run ---- */
+
 function runAway(){var b=document.getElementById('noBtn');b.style.position='fixed';b.style.left=Math.random()*(innerWidth-120)+'px';b.style.top=Math.random()*(innerHeight-60)+'px';}
 
-/* ---- start ---- */
 function startLove(){
   document.getElementById('page1').style.display='none';
   document.getElementById('page2').classList.add('show');
@@ -167,7 +162,7 @@ function startLove(){
   startLoveText();
 }
 
-/* ---- love text ---- */
+
 var loveMessages=['I LOVE YOU ♥','♡','♡','LUV U','♥ ♥ ♥'];
 var msgIdx=0;
 function startLoveText(){
@@ -229,7 +224,7 @@ function initHeart() {
   draw();
 }
 
-/* ---- snowflakes ---- */
+
 var snowChars=['♥','♡','🐾','✦','🐾','✦'];
 function createSnow(){
   var s=document.createElement('div');

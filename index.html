@@ -1,94 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>I LUV YOU</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Prompt:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#000}
-#page1,#page2{width:100%;height:100vh}
-#page1{display:flex;justify-content:center;align-items:center;background:#000;position:relative;overflow:hidden}
-#starsBg{position:absolute;inset:0;pointer-events:none}
-.box{
-  position:relative;z-index:2;
-  border:2px solid rgba(125, 7, 155, 0.7);
-  padding:38px 35px;width:320px;max-width:90%;
-  text-align:center;background:rgba(20,0,15,0.85);
-  box-shadow:0 0 40px rgb(225, 0, 255),inset 0 0 30px rgb(255, 0, 115);
-}
+html,body{width:100%;height:100%;overflow:hidden;background:#1a0020}
+#page1{width:100%;height:100vh;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden}
+canvas#starsBg{position:absolute;inset:0;pointer-events:none}
+.box{position:relative;z-index:2;border:2px solid #d966ff;padding:38px 32px;width:330px;max-width:92vw;text-align:center;background:rgba(30,0,40,0.88);box-shadow:0 0 50px #c700ff88,inset 0 0 30px #ff00aa33}
 .dots{position:absolute;top:10px;left:12px;display:flex;gap:6px}
 .dots span{width:9px;height:9px;border-radius:50%;display:inline-block}
 .dots span:nth-child(1){background:#ff5f57}
 .dots span:nth-child(2){background:#febc2e}
 .dots span:nth-child(3){background:#28c840}
-.question{color:#fff;font-family:'Press Start 2P';font-size:13px;line-height:2.2;margin-bottom:28px;text-shadow:0 0 20px rgba(255,100,180,0.5)}
-.question span{color:#910ac7}
+.kitty-face{font-size:52px;margin-bottom:12px;animation:kittyBob 1.4s ease-in-out infinite}
+@keyframes kittyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.question{color:#fff;font-family:'Press Start 2P',monospace;font-size:11px;line-height:2.2;margin-bottom:24px;text-shadow:0 0 12px #ff99ddaa}
+.question span{color:#ff66dd}
 .buttons{display:flex;justify-content:center;gap:14px}
-button{font-family:'Press Start 2P';font-size:10px;border:2px solid;padding:11px 22px;cursor:pointer;letter-spacing:1px;transition:transform .12s,box-shadow .12s}
-.yes{background:#8f05df;color:#000;border-color:#ff00b3}
-.yes:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(255, 0, 179, 0.6)}
-.no{background:#000;color:#ff0000;border-color:#ff0000}
-#page2{display:none;position:relative;background:#000}
+button{font-family:'Press Start 2P',monospace;font-size:9px;border:2px solid;padding:11px 18px;cursor:pointer;letter-spacing:1px;transition:transform .12s,box-shadow .12s}
+.yes{background:#9900cc;color:#fff;border-color:#ff66ff}
+.yes:hover{transform:scale(1.08);box-shadow:0 0 20px #ff66ff88}
+.no{background:#1a0020;color:#ff4444;border-color:#ff4444}
+
+#page2{display:none;width:100%;height:100vh;background:#1a0020;position:relative;overflow:hidden}
 #page2.show{display:block}
-canvas{position:absolute;inset:0;width:100%;height:100%}
-#musicBar{
-  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
-  z-index:10;display:none;align-items:center;gap:10px;
+canvas#heartCanvas{position:absolute;inset:0;width:100%;height:100%}
+
+/* รูปภาพตรงกลางใส่ใน heart shape */
+.center-photo-wrap{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:5;
+  width:160px;height:160px;
+  animation:bigBob 1.6s ease-in-out infinite;
+  pointer-events:none;
 }
+/* clip เป็นรูปหัวใจ */
+.center-photo-wrap svg{position:absolute;width:0;height:0}
+.center-photo-img{
+  width:160px;height:160px;
+  object-fit:cover;
+  clip-path:url(#heartClip);
+  border:none;
+  display:block;
+}
+/* fallback ถ้าไม่มีรูป: แสดง emoji */
+.center-photo-img.no-src{display:none}
+.center-kitty-fallback{
+  font-size:72px;
+  display:none;
+  animation:bigBob 1.6s ease-in-out infinite;
+}
+.center-kitty-fallback.show{display:block}
+
+/* glow ring รอบหัวใจ */
+.heart-glow{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:180px;height:180px;
+  z-index:4;
+  pointer-events:none;
+  animation:glowPulse 1.6s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{filter:drop-shadow(0 0 12px #ff66cc) drop-shadow(0 0 24px #cc44ff)}50%{filter:drop-shadow(0 0 22px #ff44bb) drop-shadow(0 0 40px #dd22ff)}}
+
+@keyframes bigBob{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-58%) scale(1.06)}}
+
+.love-text{
+  position:absolute;bottom:90px;left:50%;transform:translateX(-50%);
+  font-family:'Press Start 2P',monospace;font-size:10px;color:#ff99ee;
+  text-align:center;z-index:6;
+  text-shadow:0 0 14px #ff44bbaa;white-space:nowrap;transition:opacity 0.6s;
+}
+#musicBar{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:10;display:none;align-items:center;gap:10px}
 #musicBar.show{display:flex}
-#playBtn{
-  font-family:'Press Start 2P';font-size:9px;
-  background:transparent;border:1px solid rgba(255,150,200,0.5);
-  color:rgba(255,150,200,0.8);padding:7px 14px;cursor:pointer;
-}
+#playBtn{font-family:'Press Start 2P',monospace;font-size:8px;background:rgba(80,0,100,0.7);border:1px solid #cc66ff88;color:#ff99ee;padding:8px 16px;cursor:pointer}
 #playBtn:hover{border-color:#ff88cc;color:#ff88cc}
 
-.snowflake{
-        position:fixed;
-        top:-40px;
-        pointer-events:none;
-        z-index:3;
-        font-family:'Outfit',sans-serif;
-        font-weight:800;
-        color:rgb(142, 21, 190);
-        text-shadow:0 0 8px rgba(65, 61, 63, 0.507);
-        animation:snowfall linear forwards;
-        user-select:none;
-        }
-        
-        @keyframes snowfall{
-        0%{
-        transform:translateY(0) rotate(0deg);
-        opacity:0;
-        }
-        10%{
-        opacity:1;
-        }
-        90%{
-        opacity:.6;
-        }
-        100%{
-        transform:translateY(110vh) rotate(360deg);
-        opacity:0;
-        }
-        }
-        .play-btn {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: #0004ff;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #920b9e;
-            font-size: 14px;
-            transition: var(--transition);
-        }
-
+.snowflake{position:fixed;top:-40px;pointer-events:none;z-index:3;animation:snowfall linear forwards;user-select:none}
+@keyframes snowfall{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:.7}100%{transform:translateY(110vh) rotate(360deg);opacity:0}}
 </style>
 </head>
 <body>
@@ -97,7 +91,8 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
   <canvas id="starsBg"></canvas>
   <div class="box">
     <div class="dots"><span></span><span></span><span></span></div>
-    <div class="question">DO YOU<br><span>LOVE ME?</span></div>
+    <div class="kitty-face">🐱</div>
+    <div class="question"><br>SSSSSS<span></span><br><br><span style="font-size:30px;color:#cc99ff">เป็นแฟนกันมั้ย</span></div>
     <div class="buttons">
       <button class="yes" onclick="startLove()">YES ♥</button>
       <button class="no" id="noBtn" onmouseover="runAway()" ontouchstart="runAway()">NO</button>
@@ -107,124 +102,135 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 
 <div id="page2">
   <canvas id="heartCanvas"></canvas>
+
+  <!-- SVG clipPath รูปหัวใจ (ซ่อนไว้) -->
+  <svg style="position:absolute;width:0;height:0">
+    <defs>
+      <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
+        <path d="
+          M0.5,0.9
+          C0.1,0.65 0,0.45 0,0.3
+          C0,0.12 0.12,0 0.28,0
+          C0.37,0 0.46,0.07 0.5,0.15
+          C0.54,0.07 0.63,0 0.72,0
+          C0.88,0 1,0.12 1,0.3
+          C1,0.45 0.9,0.65 0.5,0.9Z
+        "/>
+      </clipPath>
+    </defs>
+  </svg>
+
+  <!-- glow SVG หัวใจรอบรูป -->
+  <div class="heart-glow">
+    <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+      <path d="M90,155 C18,117 0,81 0,54 C0,22 22,0 50,0 C67,0 83,13 90,27 C97,13 113,0 130,0 C158,0 180,22 180,54 C180,81 162,117 90,155Z"
+        fill="none" stroke="#ff66cc" stroke-width="2.5" opacity="0.7"/>
+    </svg>
+  </div>
+
+  <!-- รูปภาพ clip หัวใจ — เปลี่ยน src="YOUR_PHOTO.jpg" เป็นรูปของคุณ -->
+  <div class="center-photo-wrap">
+    <img class="center-photo-img" id="photoImg"
+      src="https://cdn.discordapp.com/attachments/1503260151841427506/1513490191715930152/Pocoyo_drip.jpg?ex=6a2c8854&is=6a2b36d4&hm=e1cd5431360936cccaac05b05a2eaebd0e72f61dd6d678b23f4ba394a25472dd&"
+      alt="photo"
+      onerror="this.classList.add('no-src');document.getElementById('fallbackKitty').classList.add('show')"
+    >
+  </div>
+
+  <!-- fallback ถ้าไม่ใส่รูป -->
+  <div class="center-kitty-fallback" id="fallbackKitty" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5">🐱</div>
+
+  <div class="love-text" id="loveText"></div>
   <div id="musicBar">
     <button id="playBtn" onclick="togglePlay()">❚❚ PAUSE</button>
   </div>
 </div>
 
-
 <audio id="bgAudio" loop src="https://files.catbox.moe/quu7jt.mp3"></audio>
 
 <script>
-
+/* ---- stars ---- */
 var sC=document.getElementById('starsBg'),sX=sC.getContext('2d'),ST=[];
-function initStars(){
-  sC.width=innerWidth;sC.height=innerHeight;ST=[];
-  for(var i=0;i<160;i++)ST.push({x:Math.random()*sC.width,y:Math.random()*sC.height,r:Math.random()*1.3+0.2,a:Math.random(),da:Math.random()*.012+.003,pk:Math.random()>.7});
-}
-function drawStars(){
-  sX.clearRect(0,0,sC.width,sC.height);
-  ST.forEach(function(s){s.a+=s.da;if(s.a>1||s.a<0)s.da*=-1;sX.globalAlpha=s.a*.7+.1;sX.fillStyle=s.pk?'#ffaadd':'#fff';sX.beginPath();sX.arc(s.x,s.y,s.r,0,Math.PI*2);sX.fill();});
-  sX.globalAlpha=1;requestAnimationFrame(drawStars);
-}
-initStars();drawStars();
-window.addEventListener('resize',initStars);
+function initStars(){sC.width=innerWidth;sC.height=innerHeight;ST=[];for(var i=0;i<180;i++)ST.push({x:Math.random()*sC.width,y:Math.random()*sC.height,r:Math.random()*1.4+0.2,a:Math.random(),da:Math.random()*.014+.003,pk:Math.random()>.6});}
+function drawStars(){sX.clearRect(0,0,sC.width,sC.height);ST.forEach(function(s){s.a+=s.da;if(s.a>1||s.a<0)s.da*=-1;sX.globalAlpha=s.a*.75+.1;sX.fillStyle=s.pk?'#ffaaee':'#fff';sX.beginPath();sX.arc(s.x,s.y,s.r,0,Math.PI*2);sX.fill();});sX.globalAlpha=1;requestAnimationFrame(drawStars);}
+initStars();drawStars();window.addEventListener('resize',initStars);
 
-
-
-
-
+/* ---- audio ---- */
 var audio=document.getElementById('bgAudio');
+function playMusic(){audio.volume=0;audio.play().catch(function(){});var v=0,fi=setInterval(function(){v+=0.04;if(v>=0.8){v=0.8;clearInterval(fi);}audio.volume=v;},80);}
+function togglePlay(){var btn=document.getElementById('playBtn');if(audio.paused){audio.play();btn.textContent='❚❚ PAUSE';}else{audio.pause();btn.textContent='▶ PLAY';}}
 
-function playMusic(){
-  if(!audio.src||audio.src===window.location.href)return;
-  audio.volume=0;
-  audio.play().catch(function(){});
-  var v=0,fi=setInterval(function(){v+=0.04;if(v>=0.85){v=0.85;clearInterval(fi);}audio.volume=v;},80);
-}
+/* ---- no button run ---- */
+function runAway(){var b=document.getElementById('noBtn');b.style.position='fixed';b.style.left=Math.random()*(innerWidth-120)+'px';b.style.top=Math.random()*(innerHeight-60)+'px';}
 
-function togglePlay(){
-  var btn=document.getElementById('playBtn');
-  if(audio.paused){audio.play();btn.textContent='❚❚ PAUSE';}
-  else{audio.pause();btn.textContent='▶ PLAY';}
-}
-
-
-function runAway(){
-  var b=document.getElementById('noBtn');
-  b.style.position='fixed';
-  b.style.left=Math.random()*(innerWidth-120)+'px';
-  b.style.top=Math.random()*(innerHeight-60)+'px';
-}
-
-
+/* ---- start ---- */
 function startLove(){
   document.getElementById('page1').style.display='none';
   document.getElementById('page2').classList.add('show');
-  if(audio.src&&audio.src!==window.location.href){
-    document.getElementById('musicBar').classList.add('show');
-    playMusic();
-  }
+  document.getElementById('musicBar').classList.add('show');
+  playMusic();
   setTimeout(initHeart,100);
+  startLoveText();
 }
 
-
-
-function initHeart(){
-  var cvs=document.getElementById('heartCanvas');
-  var W=innerWidth,H=innerHeight;
-  cvs.width=W;cvs.height=H;
-  var ctx=cvs.getContext('2d');
-  var cx=W/2,cy=H/2-30;
-  var pts=[];
-  function hx(t,s){return cx+s*16*Math.pow(Math.sin(t),3)}
-  function hy(t,s){return cy-s*(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))}
-  var N=60;
-  for(var i=0;i<N;i++){
-    var t=i/N*Math.PI*2;
-    var sc=8+Math.random()*2;
-    pts.push({tx:hx(t,sc),ty:hy(t,sc),x:cx+Math.random()*60-20,y:cy+Math.random()*60-20,alpha:0,delay:i*3,sz:11+Math.random()*4,phase:Math.random()*Math.PI*2,speed:0.04+Math.random()*0.02});
-  }
-  var frame=0;
-  function draw(){
-    ctx.clearRect(0,0,W,H);frame++;
-    for(var i=0;i<pts.length;i++){
-      var p=pts[i];if(frame<p.delay)continue;
-      p.x=p.x+(p.tx-p.x)*0.04;p.y=p.y+(p.ty-p.y)*0.04;
-      p.alpha=Math.min(1,p.alpha+0.015);
-      var pulse=0.65+0.35*Math.sin(frame*p.speed+p.phase);
-      ctx.save();ctx.globalAlpha=p.alpha*pulse;
-      ctx.font='bold '+p.sz+'px Georgia,serif';
-      ctx.fillStyle='#f090c0';ctx.textAlign='center';
-      ctx.fillText('I love you',p.x,p.y);ctx.restore();
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
+/* ---- love text ---- */
+var loveMessages=['I LOVE YOU ♥','♡','♡','LUV U','♥ ♥ ♥'];
+var msgIdx=0;
+function startLoveText(){
+  var el=document.getElementById('loveText');
+  function next(){el.style.opacity=0;setTimeout(function(){el.textContent=loveMessages[msgIdx%loveMessages.length];msgIdx++;el.style.opacity=1;},400);}
+  next();setInterval(next,2800);
 }
 
-
-const snowChars = ['♥','💜','♡' ];
-
-    function createSnow() {
-      const snow = document.createElement('div');
-
-      snow.className = 'snowflake';
-      snow.textContent = snowChars[Math.floor(Math.random() * snowChars.length)];
-
-      snow.style.left = Math.random() * 100 + 'vw';
-      snow.style.fontSize = (Math.random() * 11+13) + 'px';
-      snow.style.opacity = Math.random() * .55 + .18;
-      snow.style.animationDuration = (Math.random() * 7 + 5) + 's';
-
-      document.body.appendChild(snow);
-
-      setTimeout(() => snow.remove(), 13000);
+ function initHeart(){
+    var cvs=document.getElementById('heartCanvas');
+    var W=innerWidth,H=innerHeight;
+    cvs.width=W;cvs.height=H;
+    var ctx=cvs.getContext('2d');
+    var cx=W/2,cy=H/2-30;
+    var pts=[];
+    function hx(t,s){return cx+s*16*Math.pow(Math.sin(t),3)}
+    function hy(t,s){return cy-s*(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))}
+    var N=60;
+    for(var i=0;i<N;i++){
+      var t=i/N*Math.PI*2;
+      var sc=8+Math.random()*2;
+      pts.push({tx:hx(t,sc),ty:hy(t,sc),x:cx+Math.random()*60-20,y:cy+Math.random()*60-20,alpha:0,delay:i*3,sz:11+Math.random()*4,phase:Math.random()*Math.PI*2,speed:0.04+Math.random()*0.02});
     }
+    var frame=0;
+    function draw(){
+      ctx.clearRect(0,0,W,H);frame++;
+      for(var i=0;i<pts.length;i++){
+        var p=pts[i];if(frame<p.delay)continue;
+        p.x=p.x+(p.tx-p.x)*0.04;p.y=p.y+(p.ty-p.y)*0.04;
+        p.alpha=Math.min(1,p.alpha+0.015);
+        var pulse=0.65+0.35*Math.sin(frame*p.speed+p.phase);
+        ctx.save();ctx.globalAlpha=p.alpha*pulse;
+        ctx.font='bold '+p.sz+'px Georgia,serif';
+        ctx.fillStyle='#f090c0';ctx.textAlign='center';
+        ctx.fillText('I love you',p.x,p.y);ctx.restore();
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
 
-setInterval(createSnow, 500);
-    for (let i = 0; i < 8; i++) setTimeout(createSnow, i * 300);
-
+/* ---- snowflakes ---- */
+var snowChars=['♥','♡','🐾','˚','*','✦'];
+function createSnow(){
+  var s=document.createElement('div');
+  s.className='snowflake';
+  s.textContent=snowChars[Math.floor(Math.random()*snowChars.length)];
+  s.style.left=Math.random()*100+'vw';
+  s.style.fontSize=(Math.random()*12+10)+'px';
+  s.style.color=['#ff88cc','#dd66ff','#ffaaee','#cc44ff'][Math.floor(Math.random()*4)];
+  s.style.opacity=Math.random()*.5+.2;
+  s.style.animationDuration=(Math.random()*7+5)+'s';
+  document.body.appendChild(s);
+  setTimeout(function(){s.remove();},13000);
+}
+setInterval(createSnow,450);
+for(var i=0;i<10;i++)setTimeout(createSnow,i*250);
 </script>
 </body>
 </html>
